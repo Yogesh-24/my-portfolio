@@ -7,6 +7,7 @@ import { TestimonialForm } from "@/views/home/testimonial-form";
 async function getApprovedTestimonials(): Promise<Testimonial[]> {
   try {
     const supabase = getSupabaseServerClient();
+
     const { data, error } = await supabase
       .from("testimonials")
       .select("id, name, role, message, rating, created_at")
@@ -14,13 +15,25 @@ async function getApprovedTestimonials(): Promise<Testimonial[]> {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("[TestimonialsSection] fetch failed:", error);
+      console.error(
+        "[TestimonialsSection] fetch failed:",
+        JSON.stringify(error, null, 2)
+      );
+
       return [];
     }
+
+    console.log(
+      `[TestimonialsSection] loaded ${data?.length ?? 0} approved testimonials`
+    );
+
     return data ?? [];
-  } catch {
-    // Supabase not configured yet — render the section with just the form
-    // rather than crashing the page (see lib/supabase/server.ts).
+  } catch (error) {
+    console.error(
+      "[TestimonialsSection] Supabase initialization failed:",
+      error
+    );
+
     return [];
   }
 }
@@ -29,8 +42,15 @@ export const TestimonialsSection = async () => {
   const testimonials = await getApprovedTestimonials();
 
   return (
-    <section id="testimonials" aria-labelledby="testimonials-heading" className="mx-auto w-full max-w-6xl px-6 py-24">
-      <h2 id="testimonials-heading" className="text-3xl font-bold text-foreground sm:text-4xl">
+    <section
+      id="testimonials"
+      aria-labelledby="testimonials-heading"
+      className="mx-auto w-full max-w-6xl px-6 py-24"
+    >
+      <h2
+        id="testimonials-heading"
+        className="text-3xl font-bold text-foreground sm:text-4xl"
+      >
         Testimonials
       </h2>
 

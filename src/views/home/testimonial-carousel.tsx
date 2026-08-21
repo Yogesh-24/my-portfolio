@@ -48,7 +48,7 @@ export const TestimonialCarousel = ({
   return (
     <div className="mt-10">
       <div
-        className="relative h-[300px] w-full overflow-hidden sm:h-[310px]"
+        className="relative h-[360px] w-full overflow-hidden sm:h-[370px]"
         aria-roledescription="carousel"
         aria-label="Testimonials"
       >
@@ -90,8 +90,7 @@ export const TestimonialCarousel = ({
             <article
               key={testimonial.id}
               aria-hidden={!isActive}
-              className="absolute left-1/2 top-1/2 w-[min(82%,620px)] -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:w-[min(72%,620px)]"
-              style={{
+              className="absolute left-1/2 top-1/2 h-[340px] w-[min(82%,620px)] -translate-y-1/2 overflow-hidden rounded-3xl transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:h-[350px] sm:w-[min(72%,620px)]"              style={{
                 transform: `translate(calc(-50% + ${offset}), -50%) scale(${scale})`,
                 opacity,
                 filter: `blur(${blur})`,
