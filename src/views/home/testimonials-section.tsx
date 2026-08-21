@@ -18,9 +18,8 @@ async function getApprovedTestimonials(): Promise<Testimonial[]> {
       return [];
     }
     return data ?? [];
-  } catch {
-    // Supabase not configured yet — render the section with just the form
-    // rather than crashing the page (see lib/supabase/server.ts).
+  } catch (error) {
+    console.error("[TestimonialsSection] Supabase client error:", error);
     return [];
   }
 }
