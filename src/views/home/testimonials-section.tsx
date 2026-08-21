@@ -2,7 +2,6 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Testimonial } from "@/app/api/testimonials/route";
 
 import { TestimonialCarousel } from "@/views/home/testimonial-carousel";
-import { TestimonialForm } from "@/views/home/testimonial-form";
 
 async function getApprovedTestimonials(): Promise<Testimonial[]> {
   try {
@@ -17,21 +16,21 @@ async function getApprovedTestimonials(): Promise<Testimonial[]> {
     if (error) {
       console.error(
         "[TestimonialsSection] fetch failed:",
-        JSON.stringify(error, null, 2)
+        JSON.stringify(error, null, 2),
       );
 
       return [];
     }
 
     console.log(
-      `[TestimonialsSection] loaded ${data?.length ?? 0} approved testimonials`
+      `[TestimonialsSection] loaded ${data?.length ?? 0} approved testimonials`,
     );
 
     return data ?? [];
   } catch (error) {
     console.error(
       "[TestimonialsSection] Supabase initialization failed:",
-      error
+      error,
     );
 
     return [];
@@ -58,13 +57,9 @@ export const TestimonialsSection = async () => {
         <TestimonialCarousel testimonials={testimonials} />
       ) : (
         <p className="mt-10 text-foreground/60">
-          {/* No testimonials yet — be the first to leave one below. */}
+          {/* No testimonials yet. */}
         </p>
       )}
-
-      <div className="mt-10 max-w-xl">
-        <TestimonialForm />
-      </div>
     </section>
   );
 };
