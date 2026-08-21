@@ -9,6 +9,7 @@ type Status = "idle" | "submitting" | "success" | "error";
 export const TestimonialForm = () => {
   const [status, setStatus] = useState<Status>("idle");
   const [rating, setRating] = useState<number>(5);
+  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const nameId = useId();
@@ -20,9 +21,6 @@ export const TestimonialForm = () => {
     setStatus("submitting");
     setErrorMessage(null);
 
-    // Capture the form element now — `event.currentTarget` is nulled out by
-    // React once this handler yields at the `await` below, so it can't be
-    // read again afterwards.
     const formEl = event.currentTarget;
     const form = new FormData(formEl);
 
@@ -56,11 +54,12 @@ export const TestimonialForm = () => {
         className="rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8 text-center"
       >
         <p className="font-semibold text-foreground">Thanks for the kind words!</p>
-        <p className="mt-2 text-sm text-foreground/60">
-        </p>
+        <p className="mt-2 text-sm text-foreground/60"></p>
       </div>
     );
   }
+
+  const displayedRating = hoveredRating ?? rating;
 
   return (
     <form
@@ -112,20 +111,33 @@ export const TestimonialForm = () => {
         />
       </div>
 
-      <fieldset className="flex items-center gap-2">
-        <legend className="mb-2 text-sm text-foreground/70">Rating</legend>
-        {[1, 2, 3, 4, 5].map((value) => (
-          <button
-            key={value}
-            type="button"
-            aria-label={`${value} star${value === 1 ? "" : "s"}`}
-            aria-pressed={rating === value}
-            onClick={() => setRating(value)}
-            className="text-2xl text-foreground/25 transition-colors duration-[var(--duration-fast)] ease-entrance aria-pressed:text-foreground"
-          >
-            ★
-          </button>
-        ))}
+      <fieldset
+        className="flex flex-col gap-2"
+        onMouseLeave={() => setHoveredRating(null)}
+      >
+        <legend className="mb-1 text-sm text-foreground/70">Rating</legend>
+        <div className="flex items-center gap-1">
+          {[1, 2, 3, 4, 5].map((value) => {
+            const isFilled = value <= displayedRating;
+
+            return (
+              <button
+                key={value}
+                type="button"
+                aria-label={`${value} star${value === 1 ? "" : "s"}`}
+                aria-pressed={value <= rating}
+                onMouseEnter={() => setHoveredRating(value)}
+                onFocus={() => setHoveredRating(value)}
+                onClick={() => setRating(value)}
+                className={`text-2xl leading-none transition-colors duration-[var(--duration-fast)] ease-entrance ${
+                  isFilled ? "text-foreground" : "text-foreground/25"
+                }`}
+              >
+                ★
+              </button>
+            );
+          })}
+        </div>
       </fieldset>
 
       {status === "error" && errorMessage && (

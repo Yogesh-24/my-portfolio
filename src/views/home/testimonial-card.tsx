@@ -1,43 +1,439 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import type { Testimonial } from "@/app/api/testimonials/route";
 
 export interface TestimonialCardProps {
   testimonial: Testimonial;
+  onModalChange?: (isOpen: boolean) => void;
 }
 
-export const TestimonialCard = ({ testimonial }: TestimonialCardProps) => {
+export const TestimonialCard = ({
+  testimonial,
+  onModalChange,
+}: TestimonialCardProps) => {
   const { name, role, message, rating } = testimonial;
 
+  const [isReadMoreOpen, setIsReadMoreOpen] = useState(false);
+  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
+
+  const displayedRating = hoveredRating ?? rating ?? 0;
+  const showReadMore = message.length > 280;
+
+  /*
+   * ---------------------------------------------------------------
+   * MODAL CONTROL
+   * ---------------------------------------------------------------
+   */
+
+  const openModal = () => {
+    setIsReadMoreOpen(true);
+    onModalChange?.(true);
+  };
+
+  const closeModal = () => {
+    setIsReadMoreOpen(false);
+    onModalChange?.(false);
+  };
+
+  /*
+   * ---------------------------------------------------------------
+   * ESCAPE KEY + BODY LOCK
+   * ---------------------------------------------------------------
+   */
+
+  useEffect(() => {
+    if (!isReadMoreOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsReadMoreOpen(false);
+        onModalChange?.(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isReadMoreOpen, onModalChange]);
+
+  /*
+   * ---------------------------------------------------------------
+   * CARD
+   * ---------------------------------------------------------------
+   */
+
   return (
-    <figure className="flex h-full min-h-0 flex-col rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8">
-      <blockquote className="min-h-0 flex-1 overflow-y-auto pr-4">
-        <p className="text-lg leading-relaxed text-foreground/90">
-          &ldquo;{message}&rdquo;
-        </p>
-      </blockquote>
+    <>
+      <figure
+        className="
+          flex
+          h-[250px]
+          min-h-0
+          w-full
+          flex-col
+          overflow-hidden
+          rounded-3xl
+          border
+          border-foreground/10
+          bg-foreground/[0.03]
+          p-6
+          shadow-[0_20px_60px_-20px_rgba(0,0,0,0.45)]
+          sm:h-[260px]
+          sm:p-7
+        "
+      >
+        {/* ==========================================================
+            MESSAGE
+            ========================================================== */}
 
-      <figcaption className="mt-5 flex shrink-0 items-center justify-between gap-4 border-t border-foreground/10 pt-4">
-        <div>
-          <p className="font-semibold text-foreground">{name}</p>
+        <div className="min-h-0 flex-1">
+          <div
+            className="
+              testimonial-message-active
+              h-[135px]
+              overflow-y-auto
+              overscroll-contain
+              pr-3
+            "
+            data-lenis-prevent
+            onWheel={(event) => {
+              /*
+               * The message owns the wheel while the cursor
+               * is inside this area.
+               *
+               * data-lenis-prevent prevents Lenis from moving
+               * the home page.
+               */
+              event.stopPropagation();
+            }}
+          >
+            <span
+              aria-hidden="true"
+              className="
+                block
+                font-serif
+                text-4xl
+                leading-none
+                text-foreground/20
+              "
+            >
+              &ldquo;
+            </span>
 
-          {role && (
-            <p className="text-sm text-foreground/60">
-              {role}
+            <p className="mt-2 text-[16px] leading-7 text-foreground/90">
+              {message}
             </p>
-          )}
+
+            {showReadMore && (
+              <button
+                type="button"
+                onClick={openModal}
+                className="
+                  mt-3
+                  rounded-full
+                  border
+                  border-foreground/15
+                  px-3
+                  py-1.5
+                  text-sm
+                  font-medium
+                  text-foreground/70
+                  transition-colors
+                  hover:border-foreground/25
+                  hover:text-foreground
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-foreground/40
+                "
+              >
+                View more
+              </button>
+            )}
+          </div>
         </div>
 
-        {rating && (
-          <div
-            aria-label={`${rating} out of 5 stars`}
-            className="shrink-0 text-foreground/80"
-          >
-            {"★".repeat(rating)}
-            <span className="text-foreground/25">
-              {"★".repeat(5 - rating)}
-            </span>
+        {/* ==========================================================
+            FOOTER
+            ========================================================== */}
+
+        <figcaption
+          className="
+            mt-4
+            flex
+            shrink-0
+            items-center
+            justify-between
+            gap-4
+            border-t
+            border-foreground/10
+            pt-4
+          "
+        >
+          <div className="min-w-0">
+            <p className="truncate font-semibold text-foreground">
+              {name}
+            </p>
+
+            {role && (
+              <p className="truncate text-sm text-foreground/60">
+                {role}
+              </p>
+            )}
           </div>
-        )}
-      </figcaption>
-    </figure>
+
+          <div
+            className="flex shrink-0 gap-0.5"
+            aria-label={`${displayedRating} out of 5 stars`}
+            onMouseLeave={() => setHoveredRating(null)}
+          >
+            {Array.from({ length: 5 }, (_, index) => {
+              const star = index + 1;
+
+              return (
+                <button
+                  key={star}
+                  type="button"
+                  aria-label={`${star} star`}
+                  onMouseEnter={() => setHoveredRating(star)}
+                  className="
+                    cursor-default
+                    text-base
+                    leading-none
+                    text-foreground
+                    focus-visible:outline-none
+                  "
+                >
+                  {star <= displayedRating ? "★" : "☆"}
+                </button>
+              );
+            })}
+          </div>
+        </figcaption>
+      </figure>
+
+      {/* ==============================================================
+          VIEW MORE MODAL
+          ============================================================== */}
+
+      {isReadMoreOpen && (
+        <div
+          className="
+            fixed
+            inset-0
+            z-[9999]
+            flex
+            items-center
+            justify-center
+            bg-black/75
+            p-4
+            backdrop-blur-sm
+            sm:p-6
+          "
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Testimonial from ${name}`}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeModal();
+            }
+          }}
+        >
+          {/* ==========================================================
+              SMALLER MODAL
+
+              Desktop:
+              max-width 620px
+              max-height 460px
+
+              Mobile:
+              always stays inside viewport
+              ========================================================== */}
+
+          <div
+            className="
+              flex
+              h-[min(460px,calc(100vh-80px))]
+              w-full
+              max-w-[620px]
+              flex-col
+              overflow-hidden
+              rounded-[22px]
+              border
+              border-foreground/15
+              bg-background
+              shadow-[0_30px_100px_-25px_rgba(0,0,0,0.9)]
+            "
+          >
+            {/* ========================================================
+                MODAL HEADER
+                ======================================================== */}
+
+            <div
+              className="
+                flex
+                shrink-0
+                items-center
+                justify-between
+                border-b
+                border-foreground/10
+                px-5
+                py-4
+                sm:px-6
+              "
+            >
+              <div className="min-w-0">
+                <p className="truncate font-semibold text-foreground">
+                  {name}
+                </p>
+
+                {role && (
+                  <p className="mt-0.5 truncate text-sm text-foreground/60">
+                    {role}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={closeModal}
+                className="
+                  ml-4
+                  flex
+                  h-9
+                  w-9
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-foreground/10
+                  text-xl
+                  leading-none
+                  text-foreground/60
+                  transition-colors
+                  hover:border-foreground/20
+                  hover:text-foreground
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-foreground/30
+                "
+                aria-label="Close testimonial"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* ========================================================
+                MODAL MESSAGE
+
+                ONLY THIS AREA SCROLLS.
+                ======================================================== */}
+
+            <div
+              className="
+                testimonial-modal-message
+                min-h-0
+                flex-1
+                overflow-y-auto
+                overscroll-contain
+                px-5
+                py-5
+                pr-4
+                sm:px-6
+              "
+              data-lenis-prevent
+              onWheel={(event) => {
+                /*
+                 * Prevent the wheel from reaching the page/Lenis.
+                 */
+                event.stopPropagation();
+              }}
+            >
+              <span
+                aria-hidden="true"
+                className="
+                  block
+                  font-serif
+                  text-5xl
+                  leading-none
+                  text-foreground/15
+                "
+              >
+                &ldquo;
+              </span>
+
+              <p className="mt-3 text-[16px] leading-8 text-foreground/90">
+                {message}
+              </p>
+            </div>
+
+            {/* ========================================================
+                MODAL FOOTER
+                ======================================================== */}
+
+            <div
+              className="
+                flex
+                shrink-0
+                items-center
+                justify-between
+                border-t
+                border-foreground/10
+                px-5
+                py-3
+                sm:px-6
+              "
+            >
+              <div
+                className="flex gap-0.5"
+                aria-label={`${displayedRating} out of 5 stars`}
+              >
+                {Array.from({ length: 5 }, (_, index) => (
+                  <span
+                    key={index}
+                    className="text-base text-foreground"
+                  >
+                    {index < displayedRating ? "★" : "☆"}
+                  </span>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={closeModal}
+                className="
+                  rounded-full
+                  border
+                  border-foreground/10
+                  px-4
+                  py-1.5
+                  text-sm
+                  text-foreground/70
+                  transition-colors
+                  hover:border-foreground/20
+                  hover:text-foreground
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-foreground/30
+                "
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };

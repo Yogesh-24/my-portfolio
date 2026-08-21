@@ -1,23 +1,27 @@
-/* `source("../")` limits class detection to `src/` (this file lives in src/app).
-   Without it Tailwind v4 scans the whole repo — including obsidian/ and .claude/,
-   where documented class *patterns* like duration-[var(--duration-*)] parse as
-   real candidates and emit CSS warnings. Docs are not a source of utilities. */
+/*
+  Tailwind source configuration.
+  Keep the source directive directly below.
+*/
 @import "tailwindcss" source("../");
 
 /* ---------------------------------------------------------------------------
-   TIER 1 — PRIMITIVES  (`--raw-*`)
-   Raw literal values. The only tier allowed to contain a hex/px/ms literal.
-   Never referenced in markup, never bound into @theme. Rename freely.
-   Grammar: --raw-<category>-<name>[-<shade>]
-   See obsidian/frontend/design-system.md → "Token naming convention".
+   TESTIMONIAL SCROLL ISOLATION
    --------------------------------------------------------------------------- */
+
+[data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* ---------------------------------------------------------------------------
+   TIER 1 — PRIMITIVES
+   --------------------------------------------------------------------------- */
+
 :root {
   --raw-color-white: #ffffff;
   --raw-color-neutral-100: #ededed;
   --raw-color-neutral-900: #171717;
   --raw-color-neutral-950: #0a0a0a;
 
-  /* Brand ramp — indigo accent, from the reference hero design. */
   --raw-color-brand-200: #c7d2fe;
   --raw-color-brand-400: #818cf8;
   --raw-color-brand-500: #6366f1;
@@ -28,17 +32,19 @@
 }
 
 /* ---------------------------------------------------------------------------
-   TIER 2 — SEMANTIC  (role names, no namespace prefix)
-   Purpose, not appearance. Always `var(--raw-*)` — never a literal.
-   This is the themeable layer: dark mode overrides happen HERE, which is why
-   these are separate from the @theme bindings below (see the note there).
-   Grammar: --<role>[-<variant>][-<state>]
+   TIER 2 — SEMANTIC
    --------------------------------------------------------------------------- */
+
 :root {
   --background: var(--raw-color-white);
   --foreground: var(--raw-color-neutral-900);
   --surface: var(--raw-color-white);
-  --border: color-mix(in srgb, var(--raw-color-neutral-900) 12%, transparent);
+
+  --border: color-mix(
+    in srgb,
+    var(--raw-color-neutral-900) 12%,
+    transparent
+  );
 
   --accent: var(--raw-color-brand-600);
   --accent-hover: var(--raw-color-brand-500);
@@ -48,12 +54,26 @@
   --duration-normal: var(--raw-duration-normal);
 }
 
+/* ---------------------------------------------------------------------------
+   SYSTEM DARK MODE
+   --------------------------------------------------------------------------- */
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: var(--raw-color-neutral-950);
     --foreground: var(--raw-color-neutral-100);
-    --surface: color-mix(in srgb, var(--raw-color-white) 4%, var(--raw-color-neutral-950));
-    --border: color-mix(in srgb, var(--raw-color-neutral-100) 12%, transparent);
+
+    --surface: color-mix(
+      in srgb,
+      var(--raw-color-white) 4%,
+      var(--raw-color-neutral-950)
+    );
+
+    --border: color-mix(
+      in srgb,
+      var(--raw-color-neutral-100) 12%,
+      transparent
+    );
 
     --accent: var(--raw-color-brand-400);
     --accent-hover: var(--raw-color-brand-200);
@@ -61,25 +81,45 @@
   }
 }
 
-/* Manual overrides — set by the theme toggle (adds/removes `.dark` on
-   <html>), independent of system preference. Higher specificity than the
-   media query above by construction, so it always wins once applied. */
+/* ---------------------------------------------------------------------------
+   MANUAL DARK MODE
+   --------------------------------------------------------------------------- */
+
 :root.dark {
   --background: var(--raw-color-neutral-950);
   --foreground: var(--raw-color-neutral-100);
-  --surface: color-mix(in srgb, var(--raw-color-white) 4%, var(--raw-color-neutral-950));
-  --border: color-mix(in srgb, var(--raw-color-neutral-100) 12%, transparent);
+
+  --surface: color-mix(
+    in srgb,
+    var(--raw-color-white) 4%,
+    var(--raw-color-neutral-950)
+  );
+
+  --border: color-mix(
+    in srgb,
+    var(--raw-color-neutral-100) 12%,
+    transparent
+  );
 
   --accent: var(--raw-color-brand-400);
   --accent-hover: var(--raw-color-brand-200);
   --on-accent: var(--raw-color-neutral-950);
 }
 
+/* ---------------------------------------------------------------------------
+   MANUAL LIGHT MODE
+   --------------------------------------------------------------------------- */
+
 :root.light {
   --background: var(--raw-color-white);
   --foreground: var(--raw-color-neutral-900);
   --surface: var(--raw-color-white);
-  --border: color-mix(in srgb, var(--raw-color-neutral-900) 12%, transparent);
+
+  --border: color-mix(
+    in srgb,
+    var(--raw-color-neutral-900) 12%,
+    transparent
+  );
 
   --accent: var(--raw-color-brand-600);
   --accent-hover: var(--raw-color-brand-500);
@@ -87,34 +127,29 @@
 }
 
 /* ---------------------------------------------------------------------------
-   THEME BINDINGS — map semantic tokens into Tailwind namespaces.
-   Every entry is exactly `--<tw-namespace>-<role>: var(--<role>)`.
-   `inline` is required: it inlines the var() into each utility, so the
-   dark-mode overrides on the Tier 2 tokens above cascade. Binding a literal
-   here instead would freeze the value and break theming.
-
-   Only these namespaces generate utilities (verified against tailwindcss
-   v4.3.3): --color-* --spacing-* --radius-* --leading-* --tracking-* --text-*
-   --font-* --ease-* --breakpoint-* --container-* --shadow-* --blur-* --animate-*
-   NOTE: there is NO --duration-* namespace in v4 — `duration-fast` compiles to
-   nothing. Durations stay Tier 2 only and are used as duration-[var(--duration-fast)].
+   THEME BINDINGS
    --------------------------------------------------------------------------- */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
   --color-border: var(--border);
+
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-on-accent: var(--on-accent);
+
   --font-sans: var(--font-onest);
 
-  /* Leading floor for clipped TextEngine reveals — see
-     obsidian/frontend/text-engine.md → "Alignment & line-height". */
   --leading-display: 1.1;
 
   --ease-entrance: cubic-bezier(0.2, 0, 0, 1);
 }
+
+/* ---------------------------------------------------------------------------
+   BODY
+   --------------------------------------------------------------------------- */
 
 body {
   background: var(--background);
@@ -123,44 +158,131 @@ body {
   width: 100%;
 }
 
+/* ---------------------------------------------------------------------------
+   BASE
+   --------------------------------------------------------------------------- */
+
 @layer base {
-  /* Adaptive scaling grid — scales the root font-size with the viewport so a
-     rem-based layout stays proportional. Each breakpoint divides FONT_BASE
-     (16px) by the design base width its range was laid out at:
-       font-size: 16 * 100 / baseWidth  (vw)
-     Above 1920px the AdaptiveGrid component takes over (scale-up).
-     Keep in sync with src/components/common/grid/grid.config.ts. */
   html {
     font-size: 16px;
   }
 
   @media (max-width: 1920px) {
     html {
-      font-size: 0.833333vw; /* 16 * 100 / 1920 */
+      font-size: 0.833333vw;
     }
   }
 
   @media (max-width: 1440px) {
     html {
-      font-size: 1.111111vw; /* 16 * 100 / 1440 */
+      font-size: 1.111111vw;
     }
   }
 
   @media (max-width: 1024px) {
     html {
-      font-size: 1.5625vw; /* 16 * 100 / 1024 */
+      font-size: 1.5625vw;
     }
   }
 
   @media (max-width: 640px) {
     html {
-      font-size: 4.444444vw; /* 16 * 100 / 360 */
+      font-size: 4.444444vw;
     }
   }
 }
+
+/* ---------------------------------------------------------------------------
+   TAILWIND LAYERS
+   --------------------------------------------------------------------------- */
 
 @layer utilities {
 }
 
 @layer components {
+}
+
+/* ---------------------------------------------------------------------------
+   TESTIMONIAL MESSAGE SCROLLING
+   --------------------------------------------------------------------------- */
+
+.testimonial-message-active,
+.testimonial-modal-message {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+
+  overscroll-behavior: contain;
+
+  -webkit-overflow-scrolling: touch;
+
+  touch-action: pan-y;
+}
+
+.testimonial-message-active:hover,
+.testimonial-message-active:focus-within,
+.testimonial-modal-message:hover,
+.testimonial-modal-message:focus-within {
+  scrollbar-color:
+    color-mix(in srgb, currentColor 28%, transparent)
+    transparent;
+}
+
+/* ---------------------------------------------------------------------------
+   WEBKIT SCROLLBAR
+   --------------------------------------------------------------------------- */
+
+.testimonial-message-active::-webkit-scrollbar,
+.testimonial-modal-message::-webkit-scrollbar {
+  width: 5px;
+}
+
+.testimonial-message-active::-webkit-scrollbar-track,
+.testimonial-modal-message::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.testimonial-message-active::-webkit-scrollbar-thumb,
+.testimonial-modal-message::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+.testimonial-message-active:hover::-webkit-scrollbar-thumb,
+.testimonial-message-active:focus-within::-webkit-scrollbar-thumb,
+.testimonial-modal-message:hover::-webkit-scrollbar-thumb,
+.testimonial-modal-message:focus-within::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.24);
+}
+
+/* ---------------------------------------------------------------------------
+   TESTIMONIAL STACK
+   --------------------------------------------------------------------------- */
+
+.testimonial-stack {
+  position: relative;
+  isolation: isolate;
+}
+
+/* ---------------------------------------------------------------------------
+   MODAL SCROLL ISOLATION
+   --------------------------------------------------------------------------- */
+
+[role="dialog"] {
+  overscroll-behavior: contain;
+}
+
+[role="dialog"] [data-lenis-prevent] {
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+/* ---------------------------------------------------------------------------
+   REDUCED MOTION
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-message-active,
+  .testimonial-modal-message {
+    scroll-behavior: auto;
+  }
 }

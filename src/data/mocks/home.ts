@@ -59,16 +59,17 @@ export const aboutContent = {
         "Built a Refund Status API giving real-time visibility into customer refund progress.",
         "Extended the Sterling Next Generation Call Center UI with post-order operation capabilities.",
       ],
-    },
-    {
-      role: "Intern — Sterling OMS",
-      company: "Acuver Consulting — Titan Company Limited",
-      period: "Oct 2024 – Jun 2025",
-      points: [
-        "Onboarded onto IBM Sterling OMS and gained hands-on experience in customization, service definitions, and order lifecycle management.",
-        "Built foundational proficiency in Java OMS back-end logic, XML/XSLT transformations, and Angular BUC UI components.",
-      ],
-    },
+    }
+    // ,
+    // {
+    //   role: "Intern — Sterling OMS",
+    //   company: "Acuver Consulting — Titan Company Limited",
+    //   period: "Oct 2024 – Jun 2025",
+    //   points: [
+    //     "Onboarded onto IBM Sterling OMS and gained hands-on experience in customization, service definitions, and order lifecycle management.",
+    //     "Built foundational proficiency in Java OMS back-end logic, XML/XSLT transformations, and Angular BUC UI components.",
+    //   ],
+    // },
   ],
 };
 
