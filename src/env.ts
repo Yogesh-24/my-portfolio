@@ -42,6 +42,8 @@ const serverSchema = z.object({
    * never `NEXT_PUBLIC_`. Used to read/write the `testimonials` table.
    */
   SUPABASE_SECRET_KEY: optionalString(),
+  /** Legacy Supabase service-role key; supported as a fallback. */
+  SUPABASE_SERVICE_ROLE_KEY: optionalString(),
 
   /** Resend API key (`re_…`). When unset, emails are logged, not sent. */
   RESEND_API_KEY: optionalString(),
@@ -67,6 +69,7 @@ export function getServerEnv() {
     CONTACT_ENDPOINT: process.env.CONTACT_ENDPOINT,
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
     NOTIFY_TO_EMAIL: process.env.NOTIFY_TO_EMAIL,

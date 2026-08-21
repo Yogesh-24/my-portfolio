@@ -35,9 +35,13 @@ export const TestimonialForm = () => {
       setStatus("success");
       event.currentTarget.reset();
       setRating(5);
-    } catch {
+    } catch (error) {
       setStatus("error");
-      setErrorMessage("Something went wrong — please try again in a moment.");
+      setErrorMessage(
+        error instanceof Error && error.message
+          ? error.message
+          : "Something went wrong — please try again in a moment.",
+      );
     }
   };
 

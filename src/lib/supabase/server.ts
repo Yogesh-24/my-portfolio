@@ -1,13 +1,9 @@
 /**
  * Server-only Supabase client.
  *
- * Uses the **secret** key, which bypasses RLS by design — see
- * obsidian/backend/database-supabase.md. Only ever imported from
- * `route.ts` handlers or Server Components, never from client code.
- *
- * This project has no user auth, so a plain `@supabase/supabase-js` client
- * is enough — `@supabase/ssr` is for cookie-based session auth, which
- * doesn't apply here.
+ * Uses a server-only privileged key. Prefer SUPABASE_SECRET_KEY (new Supabase
+ * secret key) and fall back to SUPABASE_SERVICE_ROLE_KEY for projects that
+ * still use the legacy service-role key name.
  */
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -17,26 +13,29 @@ import { getServerEnv } from "@/env";
 
 let cachedClient: SupabaseClient | undefined;
 
-/**
- * Returns a cached server-side Supabase client, or throws a clear `ApiError`
- * if Supabase hasn't been configured yet (so routes fail with a readable
- * 503 instead of a confusing `undefined` crash).
- */
 export function getSupabaseServerClient(): SupabaseClient {
   if (cachedClient) return cachedClient;
 
-  const { SUPABASE_URL, SUPABASE_SECRET_KEY } = getServerEnv();
+  const env = getServerEnv();
+  const url = env.SUPABASE_URL;
+  const key = env.SUPABASE_SECRET_KEY ?? env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
+  if (!url || !key) {
+    console.error("[supabase] missing server configuration", {
+      hasUrl: Boolean(url),
+      hasSecretKey: Boolean(env.SUPABASE_SECRET_KEY),
+      hasServiceRoleKey: Boolean(env.SUPABASE_SERVICE_ROLE_KEY),
+    });
     throw new ApiError(
       503,
       "supabase_not_configured",
-      "Testimonials storage isn't configured yet.",
+      "Testimonials storage is not configured on the server.",
     );
   }
 
-  cachedClient = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
-    auth: { persistSession: false },
+  cachedClient = createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
   });
+
   return cachedClient;
 }

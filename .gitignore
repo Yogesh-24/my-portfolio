@@ -1,4 +1,7 @@
-.env
 node_modules/
-*.zip
+.env
+.env.*
+!.env.example
 *.tsbuildinfo
+*.zip
+.next/

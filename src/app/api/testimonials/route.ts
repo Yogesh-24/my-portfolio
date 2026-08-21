@@ -45,7 +45,13 @@ export const GET = handle(async (): Promise<Testimonial[]> => {
  */
 export const POST = handle(async (req) => {
   const input = testimonialSchema.parse(await req.json());
-  const supabase = getSupabaseServerClient();
+  let supabase: ReturnType<typeof getSupabaseServerClient>;
+  try {
+    supabase = getSupabaseServerClient();
+  } catch (error) {
+    console.error("[api/testimonials] Supabase client initialization failed:", error);
+    throw error;
+  }
 
   const { error } = await supabase.from("testimonials").insert({
     name: input.name,
