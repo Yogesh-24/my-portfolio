@@ -38,7 +38,7 @@ export const TestimonialsSection = async () => {
         <TestimonialCarousel testimonials={testimonials} />
       ) : (
         <p className="mt-10 text-foreground/60">
-          No testimonials yet — be the first to leave one below.
+          {/* No testimonials yet — be the first to leave one below. */}
         </p>
       )}
 
