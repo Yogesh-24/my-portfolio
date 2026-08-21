@@ -42,10 +42,10 @@ export const ContactForm = () => {
 
   if (status === "success") {
     return (
-      <div
-        role="status"
-        className="flex h-full min-h-[520px] items-center justify-center rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8 text-center"
-      >
+        <div
+         role="status"
+         className="rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8 text-center"
+        >
         <div>
           <p className="font-semibold text-foreground">Message sent!</p>
           <p className="mt-2 text-sm text-foreground/60">
