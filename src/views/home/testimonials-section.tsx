@@ -56,9 +56,7 @@ export const TestimonialsSection = async () => {
       {testimonials.length > 0 ? (
         <TestimonialCarousel testimonials={testimonials} />
       ) : (
-        <p className="mt-10 text-foreground/60">
-          {/* No testimonials yet. */}
-        </p>
+        <p className="mt-10 text-foreground/60" />
       )}
     </section>
   );

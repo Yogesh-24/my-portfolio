@@ -34,6 +34,7 @@ export const TestimonialForm = () => {
           rating,
         }),
       });
+
       setStatus("success");
       formEl.reset();
       setRating(5);
@@ -54,7 +55,9 @@ export const TestimonialForm = () => {
         className="rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8 text-center"
       >
         <p className="font-semibold text-foreground">Thanks for the kind words!</p>
-        <p className="mt-2 text-sm text-foreground/60"></p>
+        <p className="mt-2 text-sm text-foreground/60">
+          Your testimonial has been submitted for review.
+        </p>
       </div>
     );
   }
@@ -64,9 +67,8 @@ export const TestimonialForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-5 rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8"
+      className="flex h-full flex-col gap-5 rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8"
     >
-      <h3 className="text-lg font-semibold text-foreground">Leave a testimonial</h3>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
@@ -79,20 +81,21 @@ export const TestimonialForm = () => {
             type="text"
             required
             maxLength={100}
-            className="rounded-xl border border-foreground/15 bg-transparent px-4 py-2.5 text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
+            className="h-11 rounded-xl border border-foreground/15 bg-transparent px-4 text-sm text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
           />
         </div>
 
         <div className="flex flex-col gap-2">
           <label htmlFor={roleId} className="text-sm text-foreground/70">
-            Role / company <span className="text-foreground/40">(optional)</span>
+            Role / company{" "}
+            <span className="text-foreground/40">(optional)</span>
           </label>
           <input
             id={roleId}
             name="role"
             type="text"
             maxLength={150}
-            className="rounded-xl border border-foreground/15 bg-transparent px-4 py-2.5 text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
+            className="h-11 rounded-xl border border-foreground/15 bg-transparent px-4 text-sm text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
           />
         </div>
       </div>
@@ -107,7 +110,7 @@ export const TestimonialForm = () => {
           required
           maxLength={1000}
           rows={4}
-          className="resize-none rounded-xl border border-foreground/15 bg-transparent px-4 py-2.5 text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
+          className="min-h-[148px] resize-none rounded-xl border border-foreground/15 bg-transparent px-4 py-3 text-sm text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
         />
       </div>
 
@@ -116,7 +119,8 @@ export const TestimonialForm = () => {
         onMouseLeave={() => setHoveredRating(null)}
       >
         <legend className="mb-1 text-sm text-foreground/70">Rating</legend>
-        <div className="flex items-center gap-1">
+
+        <div className="flex h-8 items-center gap-1">
           {[1, 2, 3, 4, 5].map((value) => {
             const isFilled = value <= displayedRating;
 
@@ -149,7 +153,7 @@ export const TestimonialForm = () => {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="self-start rounded-full bg-foreground px-6 py-2.5 font-medium text-background transition-colors duration-[var(--duration-fast)] ease-entrance hover:bg-foreground/85 disabled:opacity-50"
+        className="self-start rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background transition-colors duration-[var(--duration-fast)] ease-entrance hover:bg-foreground/85 disabled:opacity-50"
       >
         {status === "submitting" ? "Submitting…" : "Submit testimonial"}
       </button>

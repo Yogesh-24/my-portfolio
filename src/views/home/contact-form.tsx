@@ -19,9 +19,6 @@ export const ContactForm = () => {
     setStatus("submitting");
     setErrorMessage(null);
 
-    // Capture the form element now — `event.currentTarget` is nulled out by
-    // React once this handler yields at the `await` below, so it can't be
-    // read again afterwards.
     const formEl = event.currentTarget;
     const form = new FormData(formEl);
 
@@ -34,6 +31,7 @@ export const ContactForm = () => {
           message: form.get("message"),
         }),
       });
+
       setStatus("success");
       formEl.reset();
     } catch {
@@ -46,12 +44,14 @@ export const ContactForm = () => {
     return (
       <div
         role="status"
-        className="rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8 text-center"
+        className="flex h-full min-h-[520px] items-center justify-center rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8 text-center"
       >
-        <p className="font-semibold text-foreground">Message sent!</p>
-        <p className="mt-2 text-sm text-foreground/60">
-          Thanks for reaching out — I&apos;ll get back to you soon.
-        </p>
+        <div>
+          <p className="font-semibold text-foreground">Message sent!</p>
+          <p className="mt-2 text-sm text-foreground/60">
+            Thanks for reaching out — I&apos;ll get back to you soon.
+          </p>
+        </div>
       </div>
     );
   }
@@ -59,8 +59,9 @@ export const ContactForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-5 rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8"
+      className="flex h-full flex-col gap-5 rounded-3xl border border-foreground/10 bg-foreground/[0.03] p-8"
     >
+
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <label htmlFor={nameId} className="text-sm text-foreground/70">
@@ -72,7 +73,7 @@ export const ContactForm = () => {
             type="text"
             required
             maxLength={100}
-            className="rounded-xl border border-foreground/15 bg-transparent px-4 py-2.5 text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
+            className="h-11 rounded-xl border border-foreground/15 bg-transparent px-4 text-sm text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
           />
         </div>
 
@@ -85,7 +86,7 @@ export const ContactForm = () => {
             name="email"
             type="email"
             required
-            className="rounded-xl border border-foreground/15 bg-transparent px-4 py-2.5 text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
+            className="h-11 rounded-xl border border-foreground/15 bg-transparent px-4 text-sm text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
           />
         </div>
       </div>
@@ -99,8 +100,8 @@ export const ContactForm = () => {
           name="message"
           required
           maxLength={2000}
-          rows={5}
-          className="resize-none rounded-xl border border-foreground/15 bg-transparent px-4 py-2.5 text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
+          rows={4}
+          className="min-h-[148px] resize-none rounded-xl border border-foreground/15 bg-transparent px-4 py-3 text-sm text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-entrance focus-visible:border-foreground/40"
         />
       </div>
 
@@ -113,7 +114,7 @@ export const ContactForm = () => {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="self-start rounded-full bg-foreground px-6 py-2.5 font-medium text-background transition-colors duration-[var(--duration-fast)] ease-entrance hover:bg-foreground/85 disabled:opacity-50"
+        className="self-start rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background transition-colors duration-[var(--duration-fast)] ease-entrance hover:bg-foreground/85 disabled:opacity-50"
       >
         {status === "submitting" ? "Sending…" : "Send message"}
       </button>
