@@ -57,7 +57,6 @@ export const TestimonialForm = () => {
       >
         <p className="font-semibold text-foreground">Thanks for the kind words!</p>
         <p className="mt-2 text-sm text-foreground/60">
-          It&apos;s saved and will appear here once reviewed.
         </p>
       </div>
     );
