@@ -40,7 +40,7 @@ export const Nav = () => {
       >
         <a
           href="#home"
-          className="font-mono text-lg font-bold tracking-widest text-accent"
+          className="font-[family-name:var(--font-libre-franklin)]"
         >
           MY PORTFOLIO
         </a>

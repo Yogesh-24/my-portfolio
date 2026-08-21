@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Onest } from "next/font/google";
+import { Libre_Franklin, Onest } from "next/font/google";
 
 import {
   generateMetadata,
@@ -21,6 +21,12 @@ const onest = Onest({
   display: "swap",
 });
 
+const libreFranklin = Libre_Franklin({
+  variable: "--font-libre-franklin",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = generateMetadata();
 export const viewport: Viewport = generateViewport();
 
@@ -31,7 +37,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${onest.variable}`}>
+      {/* <body className={`${onest.variable}`}> */}
+      <body className={`${onest.variable} ${libreFranklin.variable}`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
