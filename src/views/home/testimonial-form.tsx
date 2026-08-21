@@ -20,7 +20,11 @@ export const TestimonialForm = () => {
     setStatus("submitting");
     setErrorMessage(null);
 
-    const form = new FormData(event.currentTarget);
+    // Capture the form element now — `event.currentTarget` is nulled out by
+    // React once this handler yields at the `await` below, so it can't be
+    // read again afterwards.
+    const formEl = event.currentTarget;
+    const form = new FormData(formEl);
 
     try {
       await apiFetch("/api/testimonials", {
@@ -33,7 +37,7 @@ export const TestimonialForm = () => {
         }),
       });
       setStatus("success");
-      event.currentTarget.reset();
+      formEl.reset();
       setRating(5);
     } catch (error) {
       setStatus("error");
