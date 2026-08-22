@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Testimonial } from "@/app/api/testimonials/route";
 
@@ -20,6 +20,19 @@ type CardPosition =
 
 const AUTO_PLAY_MS = 6500;
 
+/*
+ * Minimum horizontal drag distance (px) before a swipe counts as a
+ * navigation gesture rather than a tap/click.
+ */
+const SWIPE_THRESHOLD_PX = 50;
+
+/*
+ * If a pointer gesture moves further than this, we know it was a
+ * drag — so the resulting click on release (e.g. on "View more")
+ * gets suppressed instead of firing accidentally.
+ */
+const CLICK_SUPPRESS_THRESHOLD_PX = 8;
+
 export const TestimonialCarousel = ({
   testimonials,
 }: TestimonialCarouselProps) => {
@@ -36,6 +49,20 @@ export const TestimonialCarousel = ({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  /*
+   * ---------------------------------------------------------------
+   * SWIPE / DRAG STATE
+   * ---------------------------------------------------------------
+   */
+
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffsetX, setDragOffsetX] = useState(0);
+
+  const dragStartRef = useRef<{ x: number; y: number } | null>(null);
+  const dragAxisRef = useRef<"horizontal" | "vertical" | null>(null);
+  const suppressClickRef = useRef(false);
+  const stackRef = useRef<HTMLDivElement>(null);
+
   const count = testimonials.length;
 
   /*
@@ -44,19 +71,13 @@ export const TestimonialCarousel = ({
    *
    * IMPORTANT:
    *
-   * When View More opens:
-   *
-   *   isModalOpen = true
-   *
-   * The effect returns without creating a timer.
-   *
-   * Therefore the active testimonial CANNOT change while
-   * the modal is being read.
+   * When View More opens, or while the user is actively dragging,
+   * the active testimonial CANNOT change on its own.
    * ---------------------------------------------------------------
    */
 
   useEffect(() => {
-    if (count <= 1 || isModalOpen) {
+    if (count <= 1 || isModalOpen || isDragging) {
       return;
     }
 
@@ -69,7 +90,7 @@ export const TestimonialCarousel = ({
     return () => {
       window.clearInterval(timer);
     };
-  }, [count, isModalOpen]);
+  }, [count, isModalOpen, isDragging]);
 
   /*
    * ---------------------------------------------------------------
@@ -110,6 +131,115 @@ export const TestimonialCarousel = ({
     });
   }, [activeIndex, count, testimonials]);
 
+  /*
+   * ---------------------------------------------------------------
+   * SWIPE HANDLERS
+   *
+   * Works for touch, mouse, and pen via Pointer Events. Horizontal
+   * drags navigate between testimonials (wrapping infinitely both
+   * ways); vertical drags are left alone so the page can still
+   * scroll normally over the carousel.
+   * ---------------------------------------------------------------
+   */
+
+  const goNext = () => {
+    setActiveIndex((current) => (current + 1) % count);
+  };
+
+  const goPrev = () => {
+    setActiveIndex((current) => (current - 1 + count) % count);
+  };
+
+  const handlePointerDown = (event: React.PointerEvent) => {
+    if (count <= 1 || isModalOpen) {
+      return;
+    }
+
+    // Ignore multi-touch gestures (pinch, etc).
+    if (event.pointerType === "touch" && event.isPrimary === false) {
+      return;
+    }
+
+    dragStartRef.current = { x: event.clientX, y: event.clientY };
+    dragAxisRef.current = null;
+    suppressClickRef.current = false;
+    setIsDragging(true);
+
+    stackRef.current?.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent) => {
+    const start = dragStartRef.current;
+
+    if (!start || count <= 1) {
+      return;
+    }
+
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+
+    if (!dragAxisRef.current) {
+      if (Math.abs(deltaX) < 6 && Math.abs(deltaY) < 6) {
+        return;
+      }
+
+      dragAxisRef.current =
+        Math.abs(deltaX) > Math.abs(deltaY) ? "horizontal" : "vertical";
+    }
+
+    if (dragAxisRef.current !== "horizontal") {
+      return;
+    }
+
+    // Prevent the page/Lenis from scrolling while swiping horizontally.
+    event.preventDefault();
+
+    if (Math.abs(deltaX) > CLICK_SUPPRESS_THRESHOLD_PX) {
+      suppressClickRef.current = true;
+    }
+
+    // Resistance near the edges keeps the gesture feeling grounded.
+    const resisted = deltaX * 0.55;
+
+    setDragOffsetX(resisted);
+  };
+
+  const endDrag = (event: React.PointerEvent) => {
+    const start = dragStartRef.current;
+
+    if (start && dragAxisRef.current === "horizontal") {
+      const deltaX = event.clientX - start.x;
+
+      if (deltaX <= -SWIPE_THRESHOLD_PX) {
+        goNext();
+      } else if (deltaX >= SWIPE_THRESHOLD_PX) {
+        goPrev();
+      }
+    }
+
+    dragStartRef.current = null;
+    dragAxisRef.current = null;
+    setIsDragging(false);
+    setDragOffsetX(0);
+
+    if (stackRef.current?.hasPointerCapture(event.pointerId)) {
+      stackRef.current.releasePointerCapture(event.pointerId);
+    }
+
+    // Clear the click-suppression flag on the next tick, after any
+    // resulting click event has already been intercepted.
+    window.setTimeout(() => {
+      suppressClickRef.current = false;
+    }, 0);
+  };
+
+  const handleClickCapture = (event: React.MouseEvent) => {
+    if (suppressClickRef.current) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
+
   if (count === 0) {
     return null;
   }
@@ -122,6 +252,7 @@ export const TestimonialCarousel = ({
    *   sharp
    *   large
    *   front
+   *   follows the finger while dragging
    *
    * Adjacent cards:
    *   smaller
@@ -134,8 +265,7 @@ export const TestimonialCarousel = ({
     switch (position) {
       case "active":
         return {
-          transform:
-            "translate3d(-50%, -50%, 0) scale(1) rotateY(0deg)",
+          transform: `translate3d(calc(-50% + ${dragOffsetX}px), -50%, 0) scale(1) rotateY(0deg)`,
           opacity: 1,
           filter: "blur(0px)",
           zIndex: 50,
@@ -215,15 +345,23 @@ export const TestimonialCarousel = ({
           ========================================================== */}
 
       <div
+        ref={stackRef}
         className="
           relative
           mx-auto
           h-[330px]
           w-full
           max-w-[1050px]
+          touch-pan-y
           overflow-visible
           [perspective:1400px]
         "
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClickCapture={handleClickCapture}
+        style={{ cursor: count > 1 ? (isDragging ? "grabbing" : "grab") : undefined }}
       >
         {testimonials.map((testimonial, index) => {
           const position = positions[index];
@@ -234,19 +372,21 @@ export const TestimonialCarousel = ({
             <article
               key={testimonial.id}
               aria-hidden={!isActive}
-              className="
+              className={`
                 absolute
                 left-1/2
                 top-1/2
                 w-[calc(100%-32px)]
                 max-w-[780px]
-                transition-[transform,opacity,filter]
-                duration-[950ms]
-                ease-[cubic-bezier(0.22,1,0.36,1)]
                 will-change-transform
                 motion-reduce:transition-none
                 sm:w-[calc(100%-80px)]
-              "
+                ${
+                  isDragging && isActive
+                    ? ""
+                    : "transition-[transform,opacity,filter] duration-[950ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+                }
+              `}
               style={style}
             >
               <TestimonialCard

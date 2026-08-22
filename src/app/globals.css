@@ -287,19 +287,19 @@ body {
   }
 }
 /* ---------------------------------------------------------------------------
-   MARQUEE BOUNCE (name/role text on narrow testimonial cards)
+   MARQUEE TICKER (name/role text on narrow testimonial cards)
+
+   Scrolls left once, pauses, then jumps straight back to the start
+   (no reverse animation) and repeats.
    --------------------------------------------------------------------------- */
 
-@keyframes marquee-bounce {
+@keyframes marquee-scroll {
   0%,
-  15% {
+  20% {
     transform: translateX(0);
   }
-  50%,
-  65% {
-    transform: translateX(calc(-1 * var(--marquee-distance)));
-  }
+  80%,
   100% {
-    transform: translateX(0);
+    transform: translateX(calc(-1 * var(--marquee-distance)));
   }
 }

@@ -10,9 +10,12 @@ interface MarqueeTextProps {
 /**
  * Renders text on a single line. If the text overflows its container
  * (e.g. a long name/role on a narrow mobile card), it automatically
- * bounces left/right so the full text can be read, pausing briefly at
- * each end. Short text that fits stays perfectly still — no truncation,
- * no ellipsis.
+ * scrolls left once to reveal the rest, pauses, then jumps straight
+ * back to the start (no reverse scroll) and repeats — the standard
+ * "ticker" pattern (e.g. Spotify's now-playing title).
+ *
+ * Short text that already fits stays perfectly still — no animation,
+ * no truncation, no ellipsis.
  */
 export const MarqueeText = ({ text, className = "" }: MarqueeTextProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -52,9 +55,17 @@ export const MarqueeText = ({ text, className = "" }: MarqueeTextProps) => {
 
   const hasOverflow = overflowPx > 0;
 
-  // Roughly constant scroll speed regardless of how far it has to travel.
+  /*
+   * Roughly constant, unhurried reading speed regardless of how far
+   * the text has to travel — longer names scroll for longer, not
+   * faster. ~26px/sec of actual motion, which is ~60% of the total
+   * loop (the rest is the pause at each end).
+   */
+  const PIXELS_PER_SECOND = 26;
+  const MOTION_FRACTION = 0.6;
+
   const durationSeconds = hasOverflow
-    ? Math.max(3, Math.min(10, overflowPx / 35))
+    ? Math.max(5, Math.min(16, overflowPx / PIXELS_PER_SECOND / MOTION_FRACTION))
     : 0;
 
   return (
@@ -69,7 +80,7 @@ export const MarqueeText = ({ text, className = "" }: MarqueeTextProps) => {
           hasOverflow
             ? ({
                 "--marquee-distance": `${overflowPx}px`,
-                animation: `marquee-bounce ${durationSeconds}s ease-in-out infinite`,
+                animation: `marquee-scroll ${durationSeconds}s ease-in-out infinite`,
               } as React.CSSProperties)
             : undefined
         }
