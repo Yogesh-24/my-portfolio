@@ -30,7 +30,7 @@ export const AboutSection = () => {
           <div className="mt-8 rounded-2xl border border-border bg-surface p-6">
             <p className="font-semibold text-foreground">{aboutContent.education.degree}</p>
             <p className="mt-1 text-sm text-foreground/60">
-              {aboutContent.education.school} · {aboutContent.education.period}
+              {aboutContent.education.school}
             </p>
             <p className="mt-3 text-sm leading-relaxed text-foreground/75">{aboutContent.education.detail}</p>
           </div>
