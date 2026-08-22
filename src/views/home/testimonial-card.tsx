@@ -337,6 +337,10 @@ export const TestimonialCard = ({
                 MODAL MESSAGE
 
                 ONLY THIS AREA SCROLLS.
+
+                NOTE: quote size + spacing match the card
+                (text-4xl / -mt-2) exactly, instead of the modal's
+                previous larger/looser text-5xl / mt-1 pairing.
                 ======================================================== */}
 
             <div
@@ -364,7 +368,7 @@ export const TestimonialCard = ({
                 className="
                   block
                   font-serif
-                  text-5xl
+                  text-4xl
                   leading-none
                   text-foreground/15
                 "
@@ -372,7 +376,7 @@ export const TestimonialCard = ({
                 &ldquo;
               </span>
 
-              <p className="mt-1 text-[16px] leading-8 text-foreground/90">
+              <p className="-mt-2 text-[16px] leading-8 text-foreground/90">
                 {message}
               </p>
             </div>
