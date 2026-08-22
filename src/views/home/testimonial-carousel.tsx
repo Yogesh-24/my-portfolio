@@ -155,21 +155,29 @@ export const TestimonialCarousel = ({
   };
 
   const handlePointerDown = (event: React.PointerEvent) => {
-    if (count <= 1 || isModalOpen) {
-      return;
-    }
+  if (count <= 1 || isModalOpen) {
+    return;
+  }
 
-    // Ignore multi-touch gestures (pinch, etc).
-    if (event.pointerType === "touch" && event.isPrimary === false) {
-      return;
-    }
+  // Ignore multi-touch gestures (pinch, etc).
+  if (event.pointerType === "touch" && event.isPrimary === false) {
+    return;
+  }
 
-    dragStartRef.current = { x: event.clientX, y: event.clientY };
-    dragAxisRef.current = null;
-    suppressClickRef.current = false;
-    setIsDragging(true);
+  // Don't hijack presses that start on interactive elements
+  // (buttons, links) inside the active card — let them click
+  // normally instead of being swallowed by pointer capture.
+  const target = event.target as HTMLElement;
+  if (target.closest("button, a, [role='button']")) {
+    return;
+  }
 
-    stackRef.current?.setPointerCapture(event.pointerId);
+  dragStartRef.current = { x: event.clientX, y: event.clientY };
+  dragAxisRef.current = null;
+  suppressClickRef.current = false;
+  setIsDragging(true);
+
+  stackRef.current?.setPointerCapture(event.pointerId);
   };
 
   const handlePointerMove = (event: React.PointerEvent) => {
