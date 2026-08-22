@@ -136,29 +136,47 @@ export const TestimonialCard = ({
             </p>
 
             {showReadMore && (
-              <button
-                type="button"
-                onClick={openModal}
+              <div
                 className="
-                  mt-3
-                  rounded-full
-                  border
-                  border-foreground/15
-                  px-3
-                  py-1.5
-                  text-sm
-                  font-medium
-                  text-foreground/70
-                  transition-colors
-                  hover:border-foreground/25
-                  hover:text-foreground
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-foreground/40
+                  sticky
+                  bottom-0
+                  -mx-1
+                  -mb-1
+                  flex
+                  justify-start
+                  bg-gradient-to-t
+                  from-background
+                  via-background/85
+                  to-transparent
+                  px-1
+                  pt-5
+                  pb-1
                 "
               >
-                View Card
-              </button>
+                <button
+                  type="button"
+                  onClick={openModal}
+                  className="
+                    rounded-full
+                    border
+                    border-foreground/15
+                    bg-background
+                    px-3
+                    py-1.5
+                    text-sm
+                    font-medium
+                    text-foreground/70
+                    transition-colors
+                    hover:border-foreground/25
+                    hover:text-foreground
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-foreground/40
+                  "
+                >
+                  View Card
+                </button>
+              </div>
             )}
           </div>
         </div>
