@@ -19,18 +19,6 @@ export const Footer = () => {
           sm:flex-row
         "
       >
-        <a
-          href="#home"
-          className="
-            text-sm
-            font-medium
-            text-foreground/80
-            transition-colors
-            hover:text-foreground
-          "
-        >
-          MY PORTFOLIO
-        </a>
 
         <nav
           aria-label="Footer navigation"
