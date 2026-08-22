@@ -4,17 +4,56 @@ import { useEffect, useState } from "react";
 
 import { heroContent, socialLinks } from "@/data/mocks/home";
 
-const ROLE_INTERVAL_MS = 2600;
+const TYPING_SPEED_MS = 55;
+const DELETING_SPEED_MS = 30;
+const PAUSE_AFTER_TYPE_MS = 1400;
+const PAUSE_AFTER_DELETE_MS = 300;
 
-export const HeroSection = () => {
-  const [roleIndex, setRoleIndex] = useState(0);
+const useTypewriter = (words: string[]) => {
+  const [wordIndex, setWordIndex] = useState(0);
+  const [text, setText] = useState("");
+  const [phase, setPhase] = useState<"typing" | "pausing" | "deleting">(
+    "typing",
+  );
 
   useEffect(() => {
-    const id = window.setInterval(() => {
-      setRoleIndex((i) => (i + 1) % heroContent.roles.length);
-    }, ROLE_INTERVAL_MS);
-    return () => window.clearInterval(id);
-  }, []);
+    const current = words[wordIndex];
+
+    if (phase === "typing") {
+      if (text.length < current.length) {
+        const id = window.setTimeout(() => {
+          setText(current.slice(0, text.length + 1));
+        }, TYPING_SPEED_MS);
+        return () => window.clearTimeout(id);
+      }
+
+      const id = window.setTimeout(() => {
+        setPhase("deleting");
+      }, PAUSE_AFTER_TYPE_MS);
+      return () => window.clearTimeout(id);
+    }
+
+    if (phase === "deleting") {
+      if (text.length > 0) {
+        const id = window.setTimeout(() => {
+          setText(current.slice(0, text.length - 1));
+        }, DELETING_SPEED_MS);
+        return () => window.clearTimeout(id);
+      }
+
+      const id = window.setTimeout(() => {
+        setWordIndex((i) => (i + 1) % words.length);
+        setPhase("typing");
+      }, PAUSE_AFTER_DELETE_MS);
+      return () => window.clearTimeout(id);
+    }
+  }, [text, phase, wordIndex, words]);
+
+  return text;
+};
+
+export const HeroSection = () => {
+  const typedRole = useTypewriter(heroContent.roles);
 
   return (
     <section
@@ -30,8 +69,8 @@ export const HeroSection = () => {
         aria-live="polite"
         className="mt-6 text-2xl font-bold text-foreground/90 sm:text-3xl"
       >
-        {heroContent.roles[roleIndex]}
-        <span className="ml-0.5 text-accent">|</span>
+        {typedRole}
+        <span className="ml-0.5 animate-pulse text-accent">|</span>
       </p>
 
       <p className="mt-8 max-w-2xl text-lg text-foreground/70">
@@ -103,11 +142,6 @@ const PhoneIcon = () => (
   </svg>
 );
 
-// const LinkedInIcon = () => (
-//   <svg viewBox="0 0 24 24" fill="currentColor" className="size-6" aria-hidden="true">
-//     <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM.5 8.75h9v14.75h-9V8.75ZM14.5 8.75h8.62v2.02h.12c1.2-2.1 4.14-2.32 5.16-.94.06.08-13.9-.08-13.9 6.13v7.54h-9V17.4c0-1.83-.03-4.19-2.55-4.19-2.56 0-2.95 1.99-2.95 4.06v6.23h-9V8.75Z" />
-//   </svg>
-// );
 const LinkedInIcon = () => (
   <svg
     viewBox="0 0 24 24"
