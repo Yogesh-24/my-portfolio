@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Libre_Franklin, Onest } from "next/font/google";
+import { Onest, Space_Grotesk } from "next/font/google";
 
 import {
   generateMetadata,
@@ -21,8 +21,8 @@ const onest = Onest({
   display: "swap",
 });
 
-const libreFranklin = Libre_Franklin({
-  variable: "--font-libre-franklin",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
@@ -37,14 +37,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <body className={`${onest.variable}`}> */}
-      <body className={`${onest.variable} ${libreFranklin.variable}`}>
+      <body
+        className={`${onest.variable} ${spaceGrotesk.variable}`}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(getSiteStructuredData()),
           }}
         />
+
         <ScrollLayout>
           <AdaptiveGrid />
           <ReducedMotion />

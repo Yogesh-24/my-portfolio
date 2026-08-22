@@ -19,6 +19,7 @@ export const Nav = () => {
       (window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light");
+
     setTheme(preferred);
     document.documentElement.classList.toggle("dark", preferred === "dark");
     document.documentElement.classList.toggle("light", preferred === "light");
@@ -26,6 +27,7 @@ export const Nav = () => {
 
   const toggleTheme = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";
+
     setTheme(next);
     document.documentElement.classList.toggle("dark", next === "dark");
     document.documentElement.classList.toggle("light", next === "light");
@@ -39,11 +41,12 @@ export const Nav = () => {
         className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5"
       >
         <a
-          href="#home"
-          className="font-[family-name:var(--font-libre-franklin)]"
-        >
-          MY PORTFOLIO
-        </a>
+            href="#home"
+            className="text-[1.05rem] font-medium tracking-[0.02em] text-foreground"
+            style={{ fontFamily: "var(--font-space-grotesk)" }}
+          >
+            Yogesh
+          </a>
 
         <ul className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
@@ -56,6 +59,7 @@ export const Nav = () => {
               </a>
             </li>
           ))}
+
           <li>
             <a
               href="/resume.pdf"
@@ -72,7 +76,11 @@ export const Nav = () => {
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={
+              theme === "dark"
+                ? "Switch to light mode"
+                : "Switch to dark mode"
+            }
             className="grid size-9 place-items-center rounded-full border border-border text-foreground/80 transition-colors duration-[var(--duration-fast)] ease-entrance hover:text-foreground"
           >
             {theme === "dark" ? "☀" : "☾"}
@@ -103,6 +111,7 @@ export const Nav = () => {
               </a>
             </li>
           ))}
+
           <li>
             <a
               href="/resume.pdf"

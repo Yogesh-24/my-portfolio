@@ -40,36 +40,35 @@ export const aboutContent = {
   photo: "/assets/about/portrait.jpg",
   bio: [
     "I'm a Sterling OMS Developer at Acuver Consulting, working on IBM Sterling Order Management customizations for Titan Company Limited — one of India's largest retail brands.",
-    "My day-to-day spans back-end Java logic, Angular front-end components within the Sterling BUC framework, XSLT transformations, and integrations across Flipkart marketplace orders, SAP, and payment gateways.",
-    "I hold a B.Tech in Information Technology from PSNA College of Engineering and Technology, and I'm building toward a long-term career in enterprise software — including freelance consulting and content creation on the side.",
+    "My day-to-day work involves backend development, front-end customization, data transformation, and integration workflows connecting enterprise systems, marketplaces, and payment platforms.",
+    "I hold a B.Tech in Information Technology, and I'm building toward a long-term career in enterprise software — including freelance consulting and content creation on the side.",
   ],
   education: {
-    degree: "B.Tech in Information Technology",
-    school: "PSNA College of Engineering and Technology",
-    period: "2020 – 2024",
-    detail: "81%, Dindigul, India",
-  },
+  degree: "B.Tech in Information Technology",
+  school: "PSNA College of Engineering and Technology - India",
+  detail:
+    "Built a strong foundation in software engineering through programming, object-oriented design, data structures, database management, web technologies, and application development. Gained experience translating concepts into practical software solutions, working with structured data, designing application logic, and developing a systematic approach to debugging and problem-solving.",
+    },
   experience: [
-    {
-      role: "Associate Consultant",
-      company: "Acuver Consulting — Titan Company Limited",
-      period: "Jun 2025 – Present",
-      points: [
-        "Delivered Sterling OMS customizations spanning back-end Java logic and Angular UI, aligned to retail business requirements.",
-        "Built a Refund Status API giving real-time visibility into customer refund progress.",
-        "Extended the Sterling Next Generation Call Center UI with post-order operation capabilities.",
-      ],
-    }
-    // ,
-    // {
-    //   role: "Intern — Sterling OMS",
-    //   company: "Acuver Consulting — Titan Company Limited",
-    //   period: "Oct 2024 – Jun 2025",
-    //   points: [
-    //     "Onboarded onto IBM Sterling OMS and gained hands-on experience in customization, service definitions, and order lifecycle management.",
-    //     "Built foundational proficiency in Java OMS back-end logic, XML/XSLT transformations, and Angular BUC UI components.",
-    //   ],
-    // },
+  {
+    role: "Associate Consultant",
+    company: "Acuver Consulting",
+    client: "Titan Company Limited",
+    period: "Jun 2025 – Present",
+    points: [
+      "Delivered IBM Sterling OMS customizations across back-end Java services and Angular UI components to support retail business requirements.",
+      "Extended the Sterling Next Generation Call Center UI with post-order operation capabilities.",
+    ],
+  },
+  {
+    role: "Associate Trainee",
+    company: "Acuver Consulting",
+    period: "Oct 2024 – Jun 2025",
+    points: [
+      "Gained hands-on experience with IBM Sterling OMS customization, service configuration, and order lifecycle management.",
+      "Developed foundational expertise in Java back-end logic, XML-based data transformation, and Angular BUC UI customization.",
+    ],
+  },
   ],
 };
 
@@ -82,10 +81,11 @@ export const skillGroups: SkillGroup[] = [
   {
     category: "IBM Sterling",
     items: [
-      "OMS 9.5 (OnPrem & OMoC)",
-      "NextGenCC UI",
-      "Sterling Store",
+      "OMS 9.5 and 10 (OnPrem & OMoC)",
       "IBM SST",
+      "NextGenCC UI",
+      "Sterling BUC",
+      "Service Definition Framework",
       "DB Query Client",
     ],
   },
@@ -94,7 +94,6 @@ export const skillGroups: SkillGroup[] = [
     items: [
       "Core Java (JSE)",
       "Advanced Java (JEE)",
-      "JDBC",
       "TypeScript",
       "JavaScript",
       "XML",
@@ -105,11 +104,15 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     category: "Frameworks",
-    items: ["Spring Framework", "Angular", "Hibernate"],
+    items: ["Spring Framework", "Angular","Next.js", "Hibernate"],
   },
   {
-    category: "Databases",
-    items: ["Oracle", "MySQL", "DB2"],
+  category: "Integration & APIs",
+  items: [
+    "REST APIs",
+    "Synchronous & Asynchronous API Integration",
+    "Data Transformation",
+  ],
   },
   {
     category: "Tools & Technologies",
@@ -123,11 +126,16 @@ export const skillGroups: SkillGroup[] = [
       "Postman",
       "SQL Developer",
       "DBeaver",
+      "DbVisualizer",
       "Tomcat",
     ],
   },
   {
-    category: "Version Control",
+    category: "Databases",
+    items: ["Oracle", "MySQL", "DB2"],
+  },
+  {
+    category: "Version Control & Collaboration",
     items: ["Git", "GitHub", "GitLab"],
   },
 ];
