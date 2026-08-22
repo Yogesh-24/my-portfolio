@@ -57,6 +57,7 @@ export const TestimonialCarousel = ({
 
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffsetX, setDragOffsetX] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
 
   const dragStartRef = useRef<{ x: number; y: number } | null>(null);
   const dragAxisRef = useRef<"horizontal" | "vertical" | null>(null);
@@ -71,13 +72,16 @@ export const TestimonialCarousel = ({
    *
    * IMPORTANT:
    *
-   * When View More opens, or while the user is actively dragging,
-   * the active testimonial CANNOT change on its own.
+   * Autoplay stops the moment the testimonial is actually being
+   * looked at — cursor resting on the card (desktop) or a finger
+   * touching it (mobile, via isDragging on pointerdown) — not just
+   * once a full swipe/drag gesture is underway. It also stops
+   * completely while the View More modal is open.
    * ---------------------------------------------------------------
    */
 
   useEffect(() => {
-    if (count <= 1 || isModalOpen || isDragging) {
+    if (count <= 1 || isModalOpen || isDragging || isHovering) {
       return;
     }
 
@@ -90,7 +94,7 @@ export const TestimonialCarousel = ({
     return () => {
       window.clearInterval(timer);
     };
-  }, [count, isModalOpen, isDragging]);
+  }, [count, isModalOpen, isDragging, isHovering]);
 
   /*
    * ---------------------------------------------------------------
@@ -361,6 +365,8 @@ export const TestimonialCarousel = ({
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onClickCapture={handleClickCapture}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
         style={{ cursor: count > 1 ? (isDragging ? "grabbing" : "grab") : undefined }}
       >
         {testimonials.map((testimonial, index) => {

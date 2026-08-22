@@ -131,7 +131,7 @@ export const TestimonialCard = ({
               &ldquo;
             </span>
 
-            <p className="mt-2 text-[16px] leading-7 text-foreground/90">
+            <p className="-mt-2 text-[16px] leading-7 text-foreground/90">
               {message}
             </p>
 
@@ -157,7 +157,7 @@ export const TestimonialCard = ({
                   focus-visible:ring-foreground/40
                 "
               >
-                View more
+                View Card
               </button>
             )}
           </div>
@@ -372,7 +372,7 @@ export const TestimonialCard = ({
                 &ldquo;
               </span>
 
-              <p className="mt-3 text-[16px] leading-8 text-foreground/90">
+              <p className="mt-1 text-[16px] leading-8 text-foreground/90">
                 {message}
               </p>
             </div>
