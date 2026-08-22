@@ -57,8 +57,8 @@ export const aboutContent = {
     period: "Jun 2025 – Present",
     points: [
       "Delivered IBM Sterling OMS customizations across back-end Java services and Angular UI components to support retail business requirements.",
-      "Extended the Sterling Next Generation Call Center UI with post-order operation capabilities.",
-    ],
+      "Extended the Sterling NextGen CC UI with pre/post-order operation capabilities.",
+    ]
   },
   {
     role: "Associate Trainee",

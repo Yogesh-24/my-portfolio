@@ -45,8 +45,7 @@ export const HomeView = () => {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-foreground/60">
-                Have a question or want to work together? Send a message and
-                I&apos;ll reply by email.
+                Have a question or want to work together?
               </p>
             </div>
 
