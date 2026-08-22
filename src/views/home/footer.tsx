@@ -70,7 +70,7 @@ export const Footer = () => {
         </nav>
 
         <p className="text-sm text-foreground/45">
-          © {currentYear} Yogesh N
+          © {currentYear} Yogesh 
         </p>
       </div>
     </footer>

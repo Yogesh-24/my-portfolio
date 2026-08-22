@@ -286,3 +286,20 @@ body {
     scroll-behavior: auto;
   }
 }
+/* ---------------------------------------------------------------------------
+   MARQUEE BOUNCE (name/role text on narrow testimonial cards)
+   --------------------------------------------------------------------------- */
+
+@keyframes marquee-bounce {
+  0%,
+  15% {
+    transform: translateX(0);
+  }
+  50%,
+  65% {
+    transform: translateX(calc(-1 * var(--marquee-distance)));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import type { Testimonial } from "@/app/api/testimonials/route";
+import { MarqueeText } from "@/components/common/marquee-text";
 
 export interface TestimonialCardProps {
   testimonial: Testimonial;
@@ -16,9 +17,8 @@ export const TestimonialCard = ({
   const { name, role, message, rating } = testimonial;
 
   const [isReadMoreOpen, setIsReadMoreOpen] = useState(false);
-  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
 
-  const displayedRating = hoveredRating ?? rating ?? 0;
+  const displayedRating = rating ?? 0;
   const showReadMore = message.length > 280;
 
   /*
@@ -181,41 +181,38 @@ export const TestimonialCard = ({
           "
         >
           <div className="min-w-0">
-            <p className="truncate font-semibold text-foreground">
-              {name}
-            </p>
+            <MarqueeText
+              text={name}
+              className="font-semibold text-foreground"
+            />
 
             {role && (
-              <p className="truncate text-sm text-foreground/60">
-                {role}
-              </p>
+              <MarqueeText
+                text={role}
+                className="text-sm text-foreground/60"
+              />
             )}
           </div>
 
           <div
             className="flex shrink-0 gap-0.5"
             aria-label={`${displayedRating} out of 5 stars`}
-            onMouseLeave={() => setHoveredRating(null)}
           >
             {Array.from({ length: 5 }, (_, index) => {
               const star = index + 1;
 
               return (
-                <button
+                <span
                   key={star}
-                  type="button"
-                  aria-label={`${star} star`}
-                  onMouseEnter={() => setHoveredRating(star)}
+                  aria-hidden="true"
                   className="
-                    cursor-default
                     text-base
                     leading-none
                     text-foreground
-                    focus-visible:outline-none
                   "
                 >
                   {star <= displayedRating ? "★" : "☆"}
-                </button>
+                </span>
               );
             })}
           </div>
@@ -293,14 +290,16 @@ export const TestimonialCard = ({
               "
             >
               <div className="min-w-0">
-                <p className="truncate font-semibold text-foreground">
-                  {name}
-                </p>
+                <MarqueeText
+                  text={name}
+                  className="font-semibold text-foreground"
+                />
 
                 {role && (
-                  <p className="mt-0.5 truncate text-sm text-foreground/60">
-                    {role}
-                  </p>
+                  <MarqueeText
+                    text={role}
+                    className="mt-0.5 text-sm text-foreground/60"
+                  />
                 )}
               </div>
 
