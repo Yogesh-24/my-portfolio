@@ -10,7 +10,7 @@ export const AboutSection = () => {
       </h2>
 
       <div className="mt-10 grid gap-12 lg:grid-cols-[280px_1fr]">
-        <div className="mx-auto w-56 shrink-0 overflow-hidden rounded-3xl border border-border lg:mx-0 lg:w-full">
+        <div className="mx-auto w-56 shrink-0 self-start overflow-hidden rounded-3xl border border-border lg:mx-0 lg:w-full">
           <Image
             src={aboutContent.photo}
             alt="Portrait of Yogesh N"
@@ -30,7 +30,7 @@ export const AboutSection = () => {
           <div className="mt-8 rounded-2xl border border-border bg-surface p-6">
             <p className="font-semibold text-foreground">{aboutContent.education.degree}</p>
             <p className="mt-1 text-sm text-foreground/60">
-              {aboutContent.education.school}
+              {aboutContent.education.school} · {aboutContent.education.period}
             </p>
             <p className="text-sm text-foreground/60">{aboutContent.education.detail}</p>
           </div>
