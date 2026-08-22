@@ -8,7 +8,7 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 export const TestimonialForm = () => {
   const [status, setStatus] = useState<Status>("idle");
-  const [rating, setRating] = useState<number>(5);
+  const [rating, setRating] = useState<number>(1);
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -37,7 +37,7 @@ export const TestimonialForm = () => {
 
       setStatus("success");
       formEl.reset();
-      setRating(5);
+      setRating(1);
     } catch (error) {
       setStatus("error");
       setErrorMessage(
